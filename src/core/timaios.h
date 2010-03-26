@@ -23,6 +23,12 @@
 #define TM_REQUEST_MAX_READ_SIZE  1024
 #define TM_SERVER_PORT            12345
 #define TM_PID_FILE_NAME          "timaios.pid"
+#define TM_REQ_LINE_BREAK         "\r\n"
+#define TM_REQ_LINE_BLANK         " "
+
+
+#define TM_REQUEST_URL_MAX_LENGTH 1024
+#define TM_HTTP_METHOD_MAX_LENGTH 8
 
 /**
  * HTTP Method Definition
@@ -37,6 +43,10 @@ enum tm_http_method {
 typedef int TM_RETURN_STATUS;
 typedef int TM_SERVER_SOCKET;
 
+enum tm_return_status {
+  TM_RETURN_STATUS_SUCCESS  = 0,
+  TM_RETURN_STATUS_ERROR    = -1
+};
 
 /**
  * Connection Status
@@ -58,6 +68,12 @@ enum tm_connection_status {
  *
  */
 #include "tm_memory.h"
+
+/**
+ *
+ *
+ */
+#include "tm_string.h"
 
 
 /**

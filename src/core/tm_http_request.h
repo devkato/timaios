@@ -1,4 +1,3 @@
-
 /**
  * HTTP Requestヘッダ構造体
  *
@@ -42,6 +41,7 @@ typedef struct tm_http_cookie {
  */
 typedef struct tm_http_request {
   char *request_uri;
+  char *http_method;
   int http_status;
   tm_http_request_headers_t **request_headers;
   tm_http_response_headers_t **response_headers;

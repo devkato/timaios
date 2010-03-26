@@ -12,7 +12,7 @@ build:	compile
 # コンパイル
 #
 compile:
-	gcc -Wall -O2 -o timaios src/core/*.c -Isrc/core/*.h
+	gcc -g -Wall -O2 -o timaios src/core/*.c -Isrc/core/*.h
 
 
 #

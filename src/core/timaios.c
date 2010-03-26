@@ -7,21 +7,6 @@
  */
 int main(int argc, char *argv[])
 {
-  printf(
-    "========================================\n"
-    " Boot timaios\n"
-    " \n"
-    " Pid File    : %s\n"
-    " Server Port : %d\n"
-    " NEVENTS     : %d\n"
-    "========================================\n",
-    TM_PID_FILE_NAME,
-    TM_SERVER_PORT,
-    TM_NEVENTS
-  );
-  
-  
-
   TM_SERVER_SOCKET server_socket;
   struct sockaddr_in client;
   socklen_t len;
@@ -38,9 +23,24 @@ int main(int argc, char *argv[])
   signal(SIGINT, tm_handle_signal_SIGINT);
   
   
-  /* pidファイルを作成 */
+  /* create pid file */
   process_id = getpid();
   tm_create_pid_file(process_id, TM_PID_FILE_NAME);
+  
+  printf(
+    "========================================\n"
+    " Boot timaios\n"
+    " \n"
+    " Pid File    : %s\n"
+    " Server Port : %d\n"
+    " NEVENTS     : %d\n"
+    " Pid         : %d\n"
+    "========================================\n",
+    TM_PID_FILE_NAME,
+    TM_SERVER_PORT,
+    TM_NEVENTS,
+    process_id
+  );
   
   // deamonize process
   // int ret = daemon(1, 0);
@@ -58,15 +58,11 @@ int main(int argc, char *argv[])
   
   ev.events = EPOLLIN | EPOLLET;
   // ev.events = EPOLLIN | EPOLLOUT | EPOLLET;
-  ev.data.ptr = tm_memory_allocate(sizeof(tm_connection_t));
+  ev.data.ptr = tm_create_connection(server_socket);
   if (ev.data.ptr == NULL) {
-    tm_perror("malloc");
+    tm_debug("failed to create connection");
     return 1;
   }
-  
-  tm_memory_reset(ev.data.ptr, sizeof(tm_connection_t));
-  
-  ((tm_connection_t *)ev.data.ptr)->fd = server_socket;
   
   if (epoll_ctl(epfd, EPOLL_CTL_ADD, server_socket, &ev) != 0) {
     tm_perror("epoll_ctl");
@@ -89,9 +85,7 @@ int main(int argc, char *argv[])
       // tm_debug("fd=%d\n", ci->fd);
       
       if (tm_connection->fd == server_socket) {
-        /*
-         * event that accept client'request
-         */
+        /* handling event that accept client'request */
         len = sizeof(client);
         client_socket = accept(server_socket, (struct sockaddr *)&client, &len);
         if (client_socket < 0) {
@@ -109,15 +103,11 @@ int main(int argc, char *argv[])
         tm_memory_reset(&ev, sizeof(ev));
         
         ev.events = EPOLLIN | EPOLLONESHOT | EPOLLET;
-        ev.data.ptr = tm_memory_allocate(sizeof(tm_connection_t));
+        ev.data.ptr = tm_create_connection(client_socket);
         if (ev.data.ptr == NULL) {
-          tm_perror("malloc");
+          tm_debug("failed to create connection");
           return 1;
         }
-        
-        tm_memory_reset(ev.data.ptr, sizeof(tm_connection_t));
-        
-        ((tm_connection_t *)ev.data.ptr)->fd = client_socket;
         
         if (epoll_ctl(epfd, EPOLL_CTL_ADD, client_socket, &ev) != 0) {
           tm_perror("epoll_ctl");
@@ -125,9 +115,7 @@ int main(int argc, char *argv[])
         }
       } else {
         if (ev_ret[i].events & EPOLLIN) {
-          /*
-           * event that read data from client's request
-           */
+          /* event that read data from client's request */
           tm_connection->n = read(tm_connection->fd, tm_connection->raw_data, TM_REQUEST_MAX_READ_SIZE);
           
           if (tm_connection->n < 0) {
@@ -144,9 +132,7 @@ int main(int argc, char *argv[])
             return 1;
           }
         } else if (ev_ret[i].events & EPOLLOUT) {
-          /*
-           * event that write response data to the client
-           */
+          /* event that write response data to the client */
           n = write(tm_connection->fd, tm_connection->raw_data, tm_connection->n);
           if (n < 0) {
             tm_perror("write");
@@ -162,7 +148,7 @@ int main(int argc, char *argv[])
           
           close(tm_connection->fd);
           
-          tm_memory_free(ev_ret[i].data.ptr);
+          tm_destroy_connection(ev_ret[i].data.ptr);
         }
       }
     }
