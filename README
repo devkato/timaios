@@ -1,0 +1,9 @@
+Timaios
+ - yet another dynamic web server.
+
+This project's idea is
+ - Minimal high performance HTTP server with epoll module.
+ - Don't worry about porting(only Linux platform).
+ - Don't serve static contents. There are already great project such as lighttpd(http://www.lighttpd.net/), nginx(http://nginx.org/).
+ - All request endpoint is created by the way of "plugin", even if "/".
+ 
