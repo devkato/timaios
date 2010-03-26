@@ -24,9 +24,24 @@
 #define TM_SERVER_PORT            12345
 #define TM_PID_FILE_NAME          "timaios.pid"
 
+/**
+ * HTTP Method Definition
+ *
+ */
+enum tm_http_method {
+  TM_HTTP_METHOD_GET  = 1,
+  /* Currently not to support */
+  TM_HTTP_METHOD_POST = 2
+};
+
 typedef int TM_RETURN_STATUS;
 typedef int TM_SERVER_SOCKET;
 
+
+/**
+ * Connection Status
+ *
+ */
 enum tm_connection_status {
   TM_CONNECTION_READ  =  1,
   TM_CONNECTION_WRITE =  2,

@@ -19,6 +19,8 @@ int main(int argc, char *argv[])
     TM_SERVER_PORT,
     TM_NEVENTS
   );
+  
+  
 
   TM_SERVER_SOCKET server_socket;
   struct sockaddr_in client;
@@ -88,7 +90,7 @@ int main(int argc, char *argv[])
       
       if (tm_connection->fd == server_socket) {
         /*
-         * クライアントからリクエストを受け取った際に発生するイベントの処理
+         * event that accept client'request
          */
         len = sizeof(client);
         client_socket = accept(server_socket, (struct sockaddr *)&client, &len);
@@ -124,7 +126,7 @@ int main(int argc, char *argv[])
       } else {
         if (ev_ret[i].events & EPOLLIN) {
           /*
-           * クライアントからリクエストされたデータを読み込むイベントの処理
+           * event that read data from client's request
            */
           tm_connection->n = read(tm_connection->fd, tm_connection->raw_data, TM_REQUEST_MAX_READ_SIZE);
           
@@ -134,6 +136,7 @@ int main(int argc, char *argv[])
           }
           
           tm_connection->status = TM_CONNECTION_READ;
+          tm_parse_request(tm_connection);
           ev_ret[i].events = EPOLLOUT;
           
           if (epoll_ctl(epfd, EPOLL_CTL_MOD, tm_connection->fd, &ev_ret[i]) != 0) {
@@ -142,7 +145,7 @@ int main(int argc, char *argv[])
           }
         } else if (ev_ret[i].events & EPOLLOUT) {
           /*
-           * レスポンスデータをクライアントへ返すイベントの処理
+           * event that write response data to the client
            */
           n = write(tm_connection->fd, tm_connection->raw_data, tm_connection->n);
           if (n < 0) {

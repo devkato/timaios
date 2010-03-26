@@ -35,3 +35,8 @@ hello:
 
 package:	clean
 	tar cvfz timaios`date +%Y%m%d`.tgz * --exclude="._*"
+
+commit:
+	git commit
+push:
+	git push

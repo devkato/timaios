@@ -11,3 +11,6 @@ typedef struct tm_connection {
   int status;
   int n;
 } tm_connection_t;
+
+
+void tm_parse_request(tm_connection_t *_connection);
