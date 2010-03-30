@@ -13,7 +13,9 @@
 #include <sys/epoll.h>
 #include <errno.h>
 #include <sys/ioctl.h>
+#include <time.h>
 
+#define TM_VERSION                "0.0.2"
 
 /**
  *
@@ -29,6 +31,7 @@
 
 #define TM_REQUEST_URL_MAX_LENGTH 1024
 #define TM_HTTP_METHOD_MAX_LENGTH 8
+#define TM_RESPONSE_DATA_MAX_LENGTH 8192
 
 /**
  * HTTP Method Definition

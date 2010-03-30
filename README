@@ -7,3 +7,5 @@ This project's idea is
  - Don't serve static contents. There are already great project such as lighttpd(http://www.lighttpd.net/), nginx(http://nginx.org/).
  - All request endpoint is created by the way of "plugin", even if "/".
  - Don't depend on other libraries to minimail code.
+ - Don't have to implement complete HTTP server: Get something and return something.
+ - Don't use frondend, use backend only.

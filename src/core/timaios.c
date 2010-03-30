@@ -102,7 +102,8 @@ int main(int argc, char *argv[])
         
         tm_memory_reset(&ev, sizeof(ev));
         
-        ev.events = EPOLLIN | EPOLLONESHOT | EPOLLET;
+        // ev.events = EPOLLIN | EPOLLONESHOT | EPOLLET;
+        ev.events = EPOLLIN | EPOLLET;
         ev.data.ptr = tm_create_connection(client_socket);
         if (ev.data.ptr == NULL) {
           tm_debug("failed to create connection");
@@ -133,7 +134,9 @@ int main(int argc, char *argv[])
           }
         } else if (ev_ret[i].events & EPOLLOUT) {
           /* event that write response data to the client */
-          n = write(tm_connection->fd, tm_connection->raw_data, tm_connection->n);
+          tm_create_response_data(tm_connection);
+          
+          n = write(tm_connection->fd, tm_connection->request->response_data, strlen(tm_connection->request->response_data));
           if (n < 0) {
             tm_perror("write");
             return 1;

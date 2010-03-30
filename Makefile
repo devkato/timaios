@@ -40,3 +40,6 @@ commit:
 	git commit
 push:
 	git push
+
+curl:
+	curl -v "http://localhost:12345/abc/defg/h?hello=world&heal=theworld"
