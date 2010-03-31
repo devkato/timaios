@@ -70,7 +70,7 @@ enum tm_connection_status {
 
 # else
 
-#define tm_debug(...) (printf("tm_debug : "__VA_ARGS__))
+#define tm_debug(...) (printf("[DEBUG] "__VA_ARGS__))
 
 # endif
 

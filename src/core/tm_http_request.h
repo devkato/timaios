@@ -1,28 +1,17 @@
 /**
- * HTTP Requestヘッダ構造体
- *
+ * HTTP Header
+ * @TODO
  *
  */
-typedef struct tm_http_request_headers {
+typedef struct tm_http_header {
   char *name;
   char *value;
-} tm_http_request_headers_t;
+} tm_http_header_t;
 
 
 /**
- * HTTP Responseヘッダ構造体
- *
- *
- */
-typedef struct tm_http_response_headers {
-  char *name;
-  char *value;
-} tm_http_response_headers_t;
-
-
-/**
- * Cookie構造体
- *
+ * Cookie
+ * @TODO
  *
  */
 typedef struct tm_http_cookie {
@@ -35,7 +24,7 @@ typedef struct tm_http_cookie {
 
 
 /**
- * HTTPリクエスト構造体
+ * HTTP Request
  *
  *
  */
@@ -43,24 +32,17 @@ typedef struct tm_http_request {
   char *request_uri;
   char *http_method;
   int http_status;
-  char *response_data;
-  tm_http_request_headers_t **request_headers;
-  tm_http_response_headers_t **response_headers;
+  tm_http_header_t **headers;
   tm_http_cookie_t **cookies;
 } tm_http_request_t;
 
 
 /**
- *
- *
- *
- */
-tm_http_request_t *create_request(char *_request_string);
-
-
-/**
- *
+ * HTTP Response
  *
  *
  */
-void destroy_request(tm_http_request_t *_request);
+typedef struct tm_http_response {
+  char *data;
+  tm_http_header_t **headers;
+} tm_http_response_t;

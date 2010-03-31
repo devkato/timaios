@@ -8,6 +8,7 @@ typedef struct tm_connection {
   int fd;
   char *raw_data;
   tm_http_request_t *request;
+  tm_http_response_t *response;
   int status;
   int n;
 } tm_connection_t;

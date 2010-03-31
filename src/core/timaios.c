@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
           /* event that write response data to the client */
           tm_create_response_data(tm_connection);
           
-          n = write(tm_connection->fd, tm_connection->request->response_data, strlen(tm_connection->request->response_data));
+          n = write(tm_connection->fd, tm_connection->response->data, strlen(tm_connection->response->data));
           if (n < 0) {
             tm_perror("write");
             return 1;
