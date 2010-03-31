@@ -63,7 +63,16 @@ enum tm_connection_status {
 
 #define TM_RETURN_STATUS_OK  0
 #define tm_perror(msg) perror(msg)
+
+# ifdef TM_PRODUCTION
+
+#define tm_debug(...) 
+
+# else
+
 #define tm_debug(...) (printf("tm_debug : "__VA_ARGS__))
+
+# endif
 
 
 /**

@@ -14,6 +14,8 @@ build:	compile
 compile:
 	gcc -g -Wall -O2 -o timaios src/core/*.c -Isrc/core/*.h
 
+product:
+	gcc -Wall -O3 -o timaios -DTM_PRODUCTION src/core/*.c -Isrc/core/*.h
 
 #
 # - 生成物を削除

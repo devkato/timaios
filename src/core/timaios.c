@@ -56,7 +56,8 @@ int main(int argc, char *argv[])
   
   tm_memory_reset(&ev, sizeof(ev));
   
-  ev.events = EPOLLIN | EPOLLET;
+  ev.events = EPOLLIN;
+  // ev.events = EPOLLIN | EPOLLET;
   // ev.events = EPOLLIN | EPOLLOUT | EPOLLET;
   ev.data.ptr = tm_create_connection(server_socket);
   if (ev.data.ptr == NULL) {
@@ -82,12 +83,13 @@ int main(int argc, char *argv[])
     
     for (i = 0; i < nfds; i++) {
       tm_connection_t *tm_connection = ev_ret[i].data.ptr;
-      // tm_debug("fd=%d\n", ci->fd);
       
       if (tm_connection->fd == server_socket) {
         /* handling event that accept client'request */
         len = sizeof(client);
         client_socket = accept(server_socket, (struct sockaddr *)&client, &len);
+        tm_setnonblocking(client_socket);
+        
         if (client_socket < 0) {
           if (errno == EAGAIN) {
             tm_debug("MADA KONAI");
@@ -98,11 +100,8 @@ int main(int argc, char *argv[])
           }
         }
         
-        // tm_debug("accept sock=%d\n", sock);
-        
         tm_memory_reset(&ev, sizeof(ev));
         
-        // ev.events = EPOLLIN | EPOLLONESHOT | EPOLLET;
         ev.events = EPOLLIN | EPOLLET;
         ev.data.ptr = tm_create_connection(client_socket);
         if (ev.data.ptr == NULL) {
@@ -119,9 +118,15 @@ int main(int argc, char *argv[])
           /* event that read data from client's request */
           tm_connection->n = read(tm_connection->fd, tm_connection->raw_data, TM_REQUEST_MAX_READ_SIZE);
           
+          /* @TODO manage EAGAIN status */
           if (tm_connection->n < 0) {
-            tm_perror("read");
-            return 1;
+            if (errno == EAGAIN) {
+              tm_debug("MADA KONAI");
+              continue;
+            } else {
+              tm_perror("read");
+              return 1;
+            }
           }
           
           tm_connection->status = TM_CONNECTION_READ;

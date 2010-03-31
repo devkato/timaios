@@ -22,10 +22,16 @@ TM_SERVER_SOCKET tm_initialize_socket()
   bind(sock, (struct sockaddr *)&addr, sizeof(addr));
   
   /* set non-blocking */
-  int val = 1;
-  ioctl(sock, FIONBIO, &val);
+  // int val = 1;
+  // ioctl(sock, FIONBIO, &val);
   
   listen(sock, 5);
   
   return sock;
+}
+
+void tm_setnonblocking(int _fd)
+{
+  int val = 1;
+  ioctl(_fd, FIONBIO, &val);
 }
