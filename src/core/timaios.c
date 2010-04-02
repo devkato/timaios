@@ -1,5 +1,8 @@
 #include "timaios.h"
 
+/* global configuration setting */
+struct tm_configuration configuration;
+
 /**
  *
  *
@@ -7,18 +10,23 @@
  */
 int main(int argc, char *argv[])
 {
+  /* initialize configuration files */
+  if (tm_init_configuration(argc, argv) != 0) {
+    return 0;
+  }
+  
   TM_SERVER_SOCKET server_socket;
   struct sockaddr_in client;
   socklen_t len;
   int client_socket;
   int n, i;
-  struct epoll_event ev, ev_ret[TM_NEVENTS];
+  struct epoll_event ev, ev_ret[configuration.nevents];
   int epfd;
   int nfds;
   pid_t process_id;
   
-  /* initialize configuration files */
   tm_parse_action_conf();
+  
   
   /*
    *
@@ -28,7 +36,7 @@ int main(int argc, char *argv[])
   
   /* create pid file */
   process_id = getpid();
-  tm_create_pid_file(process_id, TM_PID_FILE_NAME);
+  tm_create_pid_file(process_id, configuration.pid_file);
   
   printf(
     "========================================\n"
@@ -39,18 +47,20 @@ int main(int argc, char *argv[])
     " NEVENTS     : %d\n"
     " Pid         : %d\n"
     "========================================\n",
-    TM_PID_FILE_NAME,
-    TM_SERVER_PORT,
-    TM_NEVENTS,
+    configuration.pid_file,
+    configuration.port,
+    configuration.nevents,
     process_id
   );
   
-  // deamonize process
-  // int ret = daemon(1, 0);
+  /* deamonize process */
+  if (configuration.is_daemon) {
+    daemon(1, 0);
+  }
   
   server_socket = tm_initialize_socket();
   
-  epfd = tm_epoll_create(TM_NEVENTS);
+  epfd = tm_epoll_create(configuration.nevents);
 
   if (epfd < 0) {
     tm_perror("epoll_create");
@@ -74,7 +84,7 @@ int main(int argc, char *argv[])
   }
   
   for (;;) {
-    nfds = epoll_wait(epfd, ev_ret, TM_NEVENTS, -1);
+    nfds = epoll_wait(epfd, ev_ret, configuration.nevents, -1);
     if (nfds < 0) {
       tm_perror("epoll_wait");
       return 1;

@@ -15,23 +15,23 @@
 #include <sys/ioctl.h>
 #include <time.h>
 
-#define TM_VERSION                "0.0.2"
+#define TM_VERSION                "0.0.3"
 
 /**
  *
  *
  */
-#define TM_NEVENTS                32
 #define TM_REQUEST_MAX_READ_SIZE  1024
 #define TM_SERVER_PORT            12345
-#define TM_PID_FILE_NAME          "timaios.pid"
 #define TM_REQ_LINE_BREAK         "\r\n"
 #define TM_REQ_LINE_BLANK         " "
-
 
 #define TM_REQUEST_URL_MAX_LENGTH 1024
 #define TM_HTTP_METHOD_MAX_LENGTH 8
 #define TM_RESPONSE_DATA_MAX_LENGTH 8192
+
+/* global configuration setting */
+extern struct tm_configuration configuration;
 
 /**
  * HTTP Method Definition

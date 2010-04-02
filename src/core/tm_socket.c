@@ -14,7 +14,7 @@ TM_SERVER_SOCKET tm_initialize_socket()
   sock = socket(AF_INET, SOCK_STREAM, 0);
   
   addr.sin_family = AF_INET;
-  addr.sin_port = htons(TM_SERVER_PORT);
+  addr.sin_port = htons(configuration.port);
   addr.sin_addr.s_addr = INADDR_ANY;
   
   setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&yes, sizeof(yes));
