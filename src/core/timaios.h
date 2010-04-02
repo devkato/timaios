@@ -74,12 +74,19 @@ enum tm_connection_status {
 
 # endif
 
+/**
+ *
+ *
+ */
+#include "tm_config.h"
+
 
 /**
  *
  *
  */
 #include "tm_memory.h"
+
 
 /**
  *

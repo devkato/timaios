@@ -17,6 +17,9 @@ int main(int argc, char *argv[])
   int nfds;
   pid_t process_id;
   
+  /* initialize configuration files */
+  tm_parse_action_conf();
+  
   /*
    *
    */

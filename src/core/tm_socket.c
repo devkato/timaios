@@ -30,6 +30,13 @@ TM_SERVER_SOCKET tm_initialize_socket()
   return sock;
 }
 
+
+/**
+ * set the socket as non-blocking one
+ *
+ * @param _fd file descriptor of the socket
+ *
+ */
 void tm_setnonblocking(int _fd)
 {
   int val = 1;
