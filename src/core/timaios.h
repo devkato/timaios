@@ -9,12 +9,15 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <netinet/in.h>
 #include <sys/epoll.h>
 #include <errno.h>
 #include <sys/uio.h>
 #include <sys/ioctl.h>
 #include <time.h>
+#include <fcntl.h>
+#include <sys/time.h>
 
 #define TM_VERSION                "0.0.4"
 
@@ -138,5 +141,23 @@ enum tm_connection_status {
 #include "tm_socket.h"
 
 
+/**
+ *
+ *
+ */
+#include "tm_logger.h"
+
+
+/**
+ *
+ *
+ */
+#include "tm_time.h"
+
+
+/**
+ * Action definitions
+ *
+ */
 #include "../action/tm_action_definition.h"
 

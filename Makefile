@@ -69,3 +69,12 @@ curl:
 hello:
 	./test/run_and_request_and_kill.sh
 
+req_normal:
+	./test/run_and_request_and_kill.sh normal
+
+rn:	req_normal
+
+req_heavy:
+	./test/run_and_request_and_kill.sh heavy
+
+rh:	req_heavy

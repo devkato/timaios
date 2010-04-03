@@ -46,12 +46,21 @@ int main(int argc, char *argv[])
     " Server Port : %d\n"
     " NEVENTS     : %d\n"
     " Pid         : %d\n"
+    " Log File    : %s\n"
     "========================================\n",
     configuration.pid_file,
     configuration.port,
     configuration.nevents,
-    process_id
+    process_id,
+    configuration.log_file
   );
+  
+  /* @TODO close log file */
+  configuration.log_fd = tm_logger_init();
+  if (configuration.log_fd < 0) {
+    tm_perror("open");
+    return 1;
+  }
   
   /* deamonize process */
   if (configuration.is_daemon) {
@@ -123,7 +132,7 @@ int main(int argc, char *argv[])
         }
         
         if (epoll_ctl(epfd, EPOLL_CTL_ADD, client_socket, &ev) != 0) {
-          tm_perror("epoll_ctl");
+          tm_perror("epoll_ctl:(EPOLL_CTL_ADD)");
           return 1;
         }
       } else {
@@ -147,7 +156,7 @@ int main(int argc, char *argv[])
           ev_ret[i].events = EPOLLOUT;
           
           if (epoll_ctl(epfd, EPOLL_CTL_MOD, tm_connection->fd, &ev_ret[i]) != 0) {
-            tm_perror("epoll_ctl");
+            tm_perror("epoll_ctl(EPOLL_CTL_MOD)");
             return 1;
           }
         } else if (ev_ret[i].events & EPOLLOUT) {
@@ -166,7 +175,7 @@ int main(int argc, char *argv[])
           tm_connection->status = TM_CONNECTION_WRITE;
           
           if (epoll_ctl(epfd, EPOLL_CTL_DEL, tm_connection->fd, &ev_ret[i]) != 0) {
-            tm_perror("epoll_ctl");
+            tm_perror("epoll_ctl(EPOLL_CTL_DEL)");
             return 1;
           }
           

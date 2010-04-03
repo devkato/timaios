@@ -1,8 +1,12 @@
 #!/bin/sh
 
+level=$1
 host="localhost"
 port="12345"
+concurrency=1000
 
-curl -v "http://${host}:${port}/"
+case ${level} in
+  "normal" ) ab -n10000 -c${concurrency} "http://${host}:${port}/" ;;
+  "heavy" ) ab -n100000 -c${concurrency} "http://${host}:${port}/" ;;
+esac
 
-ab -n10000 -c1000 "http://${host}:${port}/"
