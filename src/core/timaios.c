@@ -83,8 +83,6 @@ int main(int argc, char *argv[])
   tm_memory_reset(&ev, sizeof(ev));
   
   ev.events = EPOLLIN;
-  // ev.events = EPOLLIN | EPOLLET;
-  // ev.events = EPOLLIN | EPOLLOUT | EPOLLET;
   ev.data.ptr = tm_create_connection(server_socket);
   if (ev.data.ptr == NULL) {
     tm_debug("failed to create connection");
@@ -167,10 +165,11 @@ int main(int argc, char *argv[])
           /* event that write response data to the client */
           
           /* @TODO pluggable response data */
-          // tm_action_root(tm_connection);
           tm_action_t *action = tm_action_find(tm_connection->request->path);
           if (action) {
             action->func(tm_connection);
+          } else {
+            tm_action_not_found(tm_connection);
           }
           
           /* write header data */
