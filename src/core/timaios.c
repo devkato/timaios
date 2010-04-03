@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
           /* @TODO manage EAGAIN status */
           if (tm_connection->n < 0) {
             if (errno == EAGAIN) {
-              tm_debug("MADA KONAI");
+              tm_debug("waiting data ...");
               continue;
             } else {
               tm_perror("read");
@@ -152,9 +152,19 @@ int main(int argc, char *argv[])
           }
         } else if (ev_ret[i].events & EPOLLOUT) {
           /* event that write response data to the client */
-          tm_create_response_data(tm_connection);
           
-          n = write(tm_connection->fd, tm_connection->response->data, strlen(tm_connection->response->data));
+          /* @TODO pluggable response data */
+          tm_action_root(tm_connection);
+          
+          
+          n = tm_write_response_data(tm_connection);
+          
+          // n =  write(tm_connection->fd, tm_connection->response->header, strlen(tm_connection->response->header));
+          // n += write(tm_connection->fd, "\r\n", strlen("\r\n"));
+          // n += write(tm_connection->fd, tm_connection->response->data, strlen(tm_connection->response->data));
+          
+          
+          
           if (n < 0) {
             tm_perror("write");
             return 1;

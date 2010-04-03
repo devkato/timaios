@@ -42,3 +42,28 @@ void tm_setnonblocking(int _fd)
   int val = 1;
   ioctl(_fd, FIONBIO, &val);
 }
+
+int tm_writev(int _fd, struct iovec _iovec[], int buffernum)
+{
+  return writev(_fd, _iovec, buffernum);
+}
+
+int tm_write_response_data(tm_connection_t *_connection)
+{
+  struct iovec iovec[3];
+  
+  iovec[0].iov_base = _connection->response->header;
+  iovec[0].iov_len = strlen(_connection->response->header);
+  
+  iovec[1].iov_base = "\r\n";
+  iovec[1].iov_len = 2;
+  
+  iovec[2].iov_base = _connection->response->data;
+  iovec[2].iov_len = strlen(_connection->response->data);
+  
+  return tm_writev(_connection->fd, iovec, 3);
+}
+
+
+
+

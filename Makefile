@@ -1,25 +1,38 @@
+#========================================
 #
-# デフォルトターゲット
+# - variables
 #
+#========================================
+CC_DEV = gcc -g -Wall
+CC_PROD = gcc -Wall -O3
+INCLUDES = -Isrc/core/*.h -Isrc/action/*.h
+SRC = src/core/*.c src/action/*.c
+
+
+#========================================
+#
+# Default target
+#
+#========================================
 default:	build
 
+
+#========================================
 #
-# ビルドプロセス
+# Build(Compile and other tasks to deploy)
 #
+#========================================
 build:	compile
 
-#
-# コンパイル
-#
 compile:
-	gcc -g -Wall -O2 -o timaios src/core/*.c -Isrc/core/*.h
+	$(CC_DEV) -o timaios $(SRC) $(INCLUDES)
 
 product:
-	gcc -Wall -O3 -o timaios -DTM_PRODUCTION src/core/*.c -Isrc/core/*.h
+	$(CC_PROD) -o timaios -DTM_PRODUCTION $(SRC) $(INCLUDES)
 
-#
-# - 生成物を削除
-#
+prod:	product
+
+
 clean:
 	rm -f ./timaios
 
@@ -31,10 +44,11 @@ stop:
 
 restart:	stop	start
 
-
-hello:
-	./test/run_and_request_and_kill.sh
-
+#========================================
+#
+# - tasks with git repository
+#
+#========================================
 package:	clean
 	tar cvfz timaios`date +%Y%m%d`.tgz * --exclude="._*"
 
@@ -43,5 +57,15 @@ commit:
 push:
 	git push
 
+
+#========================================
+#
+# - send test requsts
+#
+#========================================
 curl:
 	curl -v "http://localhost:12345/abc/defg/h?hello=world&heal=theworld"
+
+hello:
+	./test/run_and_request_and_kill.sh
+
