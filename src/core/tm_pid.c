@@ -1,9 +1,10 @@
 #include "timaios.h"
 
 /**
+ * create pid file for this process
  *
- *
- *
+ * @param _pid process id for this process
+ * @param _pid_filename path for pid file.
  */
 void tm_create_pid_file(pid_t _pid, const char *_pid_filename)
 {
@@ -28,9 +29,10 @@ void tm_create_pid_file(pid_t _pid, const char *_pid_filename)
 
 
 /**
+ * delete pid file
  *
- *
- *
+ * @param _pid process id
+ * @param _pid_filename path of pid file
  */
 void tm_remove_pid_file(pid_t _pid, const char *_pid_filename)
 {

@@ -20,6 +20,11 @@ int main(int argc, char *argv[])
     return 0;
   }
   
+  /* deamonize process */
+  if (configuration.is_daemon) {
+    daemon(1, 0);
+  }
+  
   TM_SERVER_SOCKET server_socket;
   struct sockaddr_in client;
   socklen_t len;
@@ -63,11 +68,6 @@ int main(int argc, char *argv[])
   
   /* initialize action mapping */
   tm_acton_regiser_init();
-  
-  /* deamonize process */
-  if (configuration.is_daemon) {
-    daemon(1, 0);
-  }
   
   server_socket = tm_initialize_socket();
   

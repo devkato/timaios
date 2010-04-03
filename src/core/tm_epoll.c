@@ -1,9 +1,9 @@
 #include "timaios.h"
 
 /**
+ * create descriptor for event polling.
  *
- *
- *
+ * @param _num_of_event number of events to be registered.(but almost ignored according to man page of "epoll")
  */
 int tm_epoll_create(int _num_of_event)
 {

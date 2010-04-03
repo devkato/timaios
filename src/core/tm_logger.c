@@ -1,17 +1,22 @@
 #include "timaios.h"
 
-#define TM_FILE_OPEN_FLAG O_CREAT | O_APPEND | O_WRONLY | O_NONBLOCK | O_ASYNC
-#define TM_FILE_OPEN_MODE S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH
-
-int tm_open_file(const char *filename, int flags, int mode)
+/**
+ * Open file and return file descriptor
+ *
+ * @param _filename
+ * @param _flags
+ * @param _mode
+ *
+ * @return file descriptor for the file
+ */
+int tm_open_file(const char *_filename, int _flags, int _mode)
 {
-  return open(filename, flags);
+  return open(_filename, _flags, _mode);
 }
 
 
 /**
- * Open file and return file descriptor
- *
+ * initialize log file
  *
  */
 int tm_logger_init()
@@ -19,13 +24,19 @@ int tm_logger_init()
   return tm_open_file(configuration.log_file, TM_FILE_OPEN_FLAG, TM_FILE_OPEN_MODE);
 }
 
-void tm_logger_write(char *line)
+
+/**
+ * write data into log file.
+ *
+ * @param _line data to be written
+ */
+void tm_logger_write(char *_line)
 {
   struct iovec iovec[1];
   
   /* @TODO memory leak? */
-  iovec[0].iov_base = line;
-  iovec[0].iov_len = strlen(line);
+  iovec[0].iov_base = _line;
+  iovec[0].iov_len = strlen(_line);
 
   tm_writev(configuration.log_fd, iovec, 1);
 }

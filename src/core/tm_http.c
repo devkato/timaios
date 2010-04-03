@@ -1,5 +1,11 @@
 #include "timaios.h"
 
+/**
+ * set HTTP Header data.
+ *
+ * @param connection instance
+ *
+ */
 void tm_http_write_header(tm_connection_t *_connection)
 {
   struct tm *date;
@@ -8,7 +14,7 @@ void tm_http_write_header(tm_connection_t *_connection)
   /* set request time */
   datestr = tm_memory_allocate((size_t)256);
 
-  // tm_debug("[tm_http_write_header] _connection->request->timestamp : %d", (int)_connection->request->timestamp);
+  // tm_debug("_connection->request->timestamp : %d\n", (int)_connection->request->timestamp);
 
   date = localtime(&_connection->request->timestamp);
   strftime(datestr, 255, "%A, %d %B %Y %H:%M:%S GMT", date);
@@ -30,6 +36,13 @@ void tm_http_write_header(tm_connection_t *_connection)
   tm_memory_free(datestr);
 }
 
+
+/**
+ * convert HTTP Status Code into string
+ *
+ * @param _status_code HTTP Status Code for the request
+ *
+ */
 const char *tm_http_from_status_code_to_string(int _status_code)
 {
   /* @TODO Implement other code */

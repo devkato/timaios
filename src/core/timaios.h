@@ -19,7 +19,7 @@
 #include <fcntl.h>
 #include <sys/time.h>
 
-#define TM_VERSION                "0.0.4"
+#define TM_VERSION                "0.1.0"
 
 /**
  *
@@ -33,6 +33,13 @@
 #define TM_REQUEST_URL_MAX_LENGTH 1024
 #define TM_HTTP_METHOD_MAX_LENGTH 8
 #define TM_RESPONSE_DATA_MAX_LENGTH 8192
+
+/* flags for opening log file */
+#define TM_FILE_OPEN_FLAG O_CREAT | O_APPEND | O_WRONLY | O_NONBLOCK | O_ASYNC
+
+/* mode for opening log file */
+#define TM_FILE_OPEN_MODE S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH
+
 
 /* global configuration setting */
 extern struct tm_configuration configuration;

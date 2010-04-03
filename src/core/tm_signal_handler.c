@@ -1,8 +1,7 @@
 #include "timaios.h"
 
 /**
- *
- *
+ * handle SIGINT signal
  *
  */
 void tm_handle_signal_SIGINT()

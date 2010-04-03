@@ -3,10 +3,7 @@
 
 /**
  *
- * @TODO To plugin
- * @TODO HTTP Status code implementation
  * @TODO content-type implementation to tm_http_request
- * @TODO Content-Length implementation
  *
  */
 void tm_action_root(tm_connection_t *_connection)

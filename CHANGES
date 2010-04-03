@@ -1,3 +1,7 @@
 Changes with timaios 0.0.1
 DATE 03/29/2010
- Add CHANGES, INSTALL and LICENSE files(almost blank).
+  Add CHANGES, INSTALL and LICENSE files(almost blank).
+
+Changes with timaios 0.1.0
+DATE 04/03/2010
+  Implement dynamically allocate function with URL.
