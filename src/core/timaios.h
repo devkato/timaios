@@ -37,6 +37,10 @@
 /* global configuration setting */
 extern struct tm_configuration configuration;
 
+typedef int TM_RETURN_STATUS;
+typedef int TM_SERVER_SOCKET;
+
+
 /**
  * HTTP Method Definition
  *
@@ -47,13 +51,32 @@ enum tm_http_method {
   TM_HTTP_METHOD_POST = 2
 };
 
-typedef int TM_RETURN_STATUS;
-typedef int TM_SERVER_SOCKET;
 
+/**
+ * HTTP Status Codes
+ *
+ */
+enum tm_http_status_code {
+  TM_HTTP_STATUS_OK                     = 200,
+  TM_HTTP_STATUS_MOVED_TEMPORARILY      = 302,
+  TM_HTTP_STATUS_BAD_REQUEST            = 400,
+  TM_HTTP_STATUS_FORBIDDEN              = 403,
+  TM_HTTP_STATUS_NOT_FOUND              = 404,
+  TM_HTTP_STATUS_INTERNAL_SERVER_ERROR  = 500,
+  TM_HTTP_STATUS_SERVICE_UNAVAILABLE    = 503,
+  TM_HTTP_STATUS_UNKNOWN                = -1
+};
+
+
+/**
+ * Return value of functions
+ *
+ */
 enum tm_return_status {
   TM_RETURN_STATUS_SUCCESS  = 0,
   TM_RETURN_STATUS_ERROR    = -1
 };
+
 
 /**
  * Connection Status
@@ -65,7 +88,11 @@ enum tm_connection_status {
   TM_CONNECTION_ERROR = -1
 };
 
-#define TM_RETURN_STATUS_OK  0
+
+/**
+ * printing message functions
+ *
+ */
 #define tm_perror(msg) perror(msg)
 
 # ifdef TM_PRODUCTION
@@ -77,6 +104,7 @@ enum tm_connection_status {
 #define tm_debug(...) (printf("[DEBUG] "__VA_ARGS__))
 
 # endif
+
 
 /**
  *
@@ -133,6 +161,14 @@ enum tm_connection_status {
  */
 #include "tm_connection.h"
 
+void tm_http_write_header(tm_connection_t *_connection);
+typedef struct tm_action {
+  char *url;
+  void (*func)(tm_connection_t *_connection);
+} tm_action_t;
+
+extern tm_action_t* action_map[10];
+
 
 /**
  *
@@ -153,6 +189,13 @@ enum tm_connection_status {
  *
  */
 #include "tm_time.h"
+
+
+/**
+ *
+ *
+ */
+#include "tm_action.h"
 
 
 /**

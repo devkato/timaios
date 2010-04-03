@@ -11,10 +11,6 @@
  */
 void tm_action_root(tm_connection_t *_connection)
 {
-  time_t timer;
-  struct tm *date;
-  char *datestr = tm_memory_allocate((size_t)256);
-
   /* response body */
   sprintf(_connection->response->data,
     "<html>\n"
@@ -28,22 +24,5 @@ void tm_action_root(tm_connection_t *_connection)
     "</html>\n"
   );
 
-  /* response header */
-  timer = time(NULL);
-  date = localtime(&timer);
-  strftime(datestr, 255, "%A, %d %B %Y %H:%M:%S GMT", date);
-  
-  sprintf(_connection->response->header,
-    "HTTP/1.1 200 OK\r\n"
-    "Cache-Control: private, max-age=0\r\n"
-    "Content-Type: text/html; charset=UTF-8\r\n"
-    "Content-Length: %ld\r\n"
-    "Server: timaios/%s\r\n"
-    "Date: %s\r\n",
-    strlen(_connection->response->data),
-    TM_VERSION,
-    datestr
-  );
-  
-  tm_memory_free(datestr);
+  _connection->response->status = TM_HTTP_STATUS_OK;
 }

@@ -2,6 +2,7 @@
 
 /* global configuration setting */
 struct tm_configuration configuration;
+tm_action_t* action_map[10];
 
 /**
  *
@@ -61,6 +62,9 @@ int main(int argc, char *argv[])
     tm_perror("open");
     return 1;
   }
+  
+  /* initialize action mapping */
+  tm_acton_regiser_init();
   
   /* deamonize process */
   if (configuration.is_daemon) {
@@ -163,8 +167,16 @@ int main(int argc, char *argv[])
           /* event that write response data to the client */
           
           /* @TODO pluggable response data */
-          tm_action_root(tm_connection);
+          // tm_action_root(tm_connection);
+          tm_action_t *action = tm_action_find(tm_connection->request->path);
+          if (action) {
+            action->func(tm_connection);
+          }
           
+          /* write header data */
+          tm_http_write_header(tm_connection);
+          
+          /* write data into socket */
           n = tm_write_response_data(tm_connection);
           
           if (n < 0) {
