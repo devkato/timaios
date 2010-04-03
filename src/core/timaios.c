@@ -1,11 +1,15 @@
 #include "timaios.h"
 
 /* global configuration setting */
+
+/* program configuration */
 struct tm_configuration configuration;
+
+/* @TODO should replace with Hash */
 tm_action_t* action_map[10];
 
 /**
- *
+ * Main function.
  *
  *
  */
@@ -26,14 +30,8 @@ int main(int argc, char *argv[])
   int nfds;
   pid_t process_id;
   
-  tm_parse_action_conf();
-  
-  
-  /*
-   *
-   */
+  /* register signal handler */
   signal(SIGINT, tm_handle_signal_SIGINT);
-  
   
   /* create pid file */
   process_id = getpid();
