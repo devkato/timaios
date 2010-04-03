@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
       } else {
         if (ev_ret[i].events & EPOLLIN) {
           /* event that read data from client's request */
-          tm_connection->n = read(tm_connection->fd, tm_connection->raw_data, TM_REQUEST_MAX_READ_SIZE);
+          tm_connection->n = tm_readv(tm_connection->fd, tm_connection->raw_data);
           
           /* @TODO manage EAGAIN status */
           if (tm_connection->n < 0) {
@@ -156,14 +156,7 @@ int main(int argc, char *argv[])
           /* @TODO pluggable response data */
           tm_action_root(tm_connection);
           
-          
           n = tm_write_response_data(tm_connection);
-          
-          // n =  write(tm_connection->fd, tm_connection->response->header, strlen(tm_connection->response->header));
-          // n += write(tm_connection->fd, "\r\n", strlen("\r\n"));
-          // n += write(tm_connection->fd, tm_connection->response->data, strlen(tm_connection->response->data));
-          
-          
           
           if (n < 0) {
             tm_perror("write");

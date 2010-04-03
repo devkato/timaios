@@ -9,3 +9,10 @@ This project's idea is
  - Don't depend on other libraries to minimize code.
  - Don't have to implement complete HTTP server: Get something and return something.
  - Don't use frondend, use backend only.
+
+
+Keywords:
+ - HTTP Server
+ - Non-Blocking
+ - epoll
+ - readv/writev

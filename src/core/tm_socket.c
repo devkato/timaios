@@ -21,10 +21,6 @@ TM_SERVER_SOCKET tm_initialize_socket()
   
   bind(sock, (struct sockaddr *)&addr, sizeof(addr));
   
-  /* set non-blocking */
-  // int val = 1;
-  // ioctl(sock, FIONBIO, &val);
-  
   listen(sock, 5);
   
   return sock;
@@ -48,10 +44,26 @@ int tm_writev(int _fd, struct iovec _iovec[], int buffernum)
   return writev(_fd, _iovec, buffernum);
 }
 
+int tm_readv(int _fd, char *data)
+{
+  struct iovec _iovec[1];
+  
+  /* @TODO memory leak? */
+  _iovec[0].iov_base = data;
+  _iovec[0].iov_len = TM_REQUEST_MAX_READ_SIZE;
+  int n = readv(_fd, _iovec, 1);
+  
+  // tm_debug("[tm_readv] n : %d\n", n);
+  // tm_debug("[tm_readv] data : %s\n", data);
+  
+  return n;
+}
+
 int tm_write_response_data(tm_connection_t *_connection)
 {
   struct iovec iovec[3];
   
+  /* @TODO memory leak? */
   iovec[0].iov_base = _connection->response->header;
   iovec[0].iov_len = strlen(_connection->response->header);
   
