@@ -18,6 +18,9 @@
 #include <time.h>
 #include <fcntl.h>
 #include <sys/time.h>
+// #include <arpa/inet.h>
+// #include <netdb.h>
+#include <netinet/tcp.h>
 
 #define TM_VERSION                "0.1.0"
 

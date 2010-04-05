@@ -9,6 +9,8 @@ TM_SERVER_SOCKET tm_initialize_socket()
   int sock;
   struct sockaddr_in addr;
   int yes = 1;
+  int send_buffer_size = 65535;
+  // int timeout = 0;
   
   sock = socket(AF_INET, SOCK_STREAM, 0);
   
@@ -16,7 +18,13 @@ TM_SERVER_SOCKET tm_initialize_socket()
   addr.sin_port = htons(configuration.port);
   addr.sin_addr.s_addr = INADDR_ANY;
   
-  setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&yes, sizeof(yes));
+  setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&yes, sizeof(int));
+  setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (const void *)&send_buffer_size, sizeof(int));
+  setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (const void *)&send_buffer_size, sizeof(int));
+  // setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const void*)&yes, (socklen_t)sizeof(int));
+  setsockopt(sock, IPPROTO_TCP, TCP_CORK, (const void*)&yes, (socklen_t)sizeof(int));
+  // setsockopt(sock, IPPROTO_TCP, TCP_DEFER_ACCEPT, (const void*)&timeout, sizeof(int));
+  // setsockopt(sock, IPPROTO_TCP, TCP_QUICKACK, (const void*)&yes, (socklen_t)sizeof(int));
   
   bind(sock, (struct sockaddr *)&addr, sizeof(addr));
   
@@ -37,6 +45,16 @@ void tm_setnonblocking(int _fd)
   ioctl(_fd, FIONBIO, &val);
 }
 
+
+/**
+ * write data to file descriptor with writev.
+ *
+ * @param _fd file descriptor
+ * @param _iovec[] data array to write
+ * @param buffernum size of data array
+ *
+ * @return number of bytes written
+ */
 int tm_writev(int _fd, struct iovec _iovec[], int buffernum)
 {
   return writev(_fd, _iovec, buffernum);

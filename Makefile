@@ -34,7 +34,7 @@ prod:	product
 
 
 clean:
-	rm -f ./timaios
+	rm -f ./timaios ./timaios.pid ./timaios.log
 
 start:
 	./timaios
