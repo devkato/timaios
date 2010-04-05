@@ -44,6 +44,9 @@ stop:
 
 restart:	stop	start
 
+top:
+	top -p `cat timaios.pid`
+
 #========================================
 #
 # - tasks with git repository
