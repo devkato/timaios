@@ -7,7 +7,7 @@ CC_DEV = gcc -g -Wall
 CC_PROD = gcc -Wall -O3
 INCLUDES = -Isrc/core/*.h -Isrc/action/*.h
 SRC = src/core/*.c src/action/*.c
-
+SRC_EXT = src/ext/kvs/*.c src/ext/rdb/*.c
 
 #========================================
 #
@@ -25,10 +25,10 @@ default:	build
 build:	compile
 
 compile:
-	$(CC_DEV) -o timaios $(SRC) $(INCLUDES)
+	$(CC_DEV) -o timaios $(SRC) $(SRC_EXT) $(INCLUDES)
 
 product:
-	$(CC_PROD) -o timaios -DTM_PRODUCTION $(SRC) $(INCLUDES)
+	$(CC_PROD) -o timaios -DTM_PRODUCTION $(SRC) $(SRC_EXT) $(INCLUDES)
 
 prod:	product
 

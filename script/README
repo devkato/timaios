@@ -1,0 +1,7 @@
+This directory will contain several script files.
+- add action.
+- remove action.
+- change ext library to use.
+- make, run, and reload
+- deploy
+- etc...
