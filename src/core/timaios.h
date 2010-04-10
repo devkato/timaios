@@ -18,6 +18,7 @@
 #include <time.h>
 #include <fcntl.h>
 #include <sys/time.h>
+#include <pthread.h>
 // #include <arpa/inet.h>
 // #include <netdb.h>
 #include <netinet/tcp.h>
@@ -206,6 +207,8 @@ extern tm_action_t* action_map[10];
  *
  */
 #include "tm_action.h"
+
+#include "tm_sys.h"
 
 
 /**

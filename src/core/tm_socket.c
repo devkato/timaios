@@ -71,9 +71,11 @@ int tm_writev(int _fd, struct iovec _iovec[], int buffernum)
  */
 int tm_readv(int _fd, char *_data)
 {
+  // int n = read(_fd, _data, TM_REQUEST_MAX_READ_SIZE);
+  // return n;
+
   struct iovec _iovec[1];
   
-  /* @TODO memory leak? */
   _iovec[0].iov_base = _data;
   _iovec[0].iov_len = TM_REQUEST_MAX_READ_SIZE;
   int n = readv(_fd, _iovec, 1);

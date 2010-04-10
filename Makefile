@@ -7,7 +7,13 @@ CC_DEV = gcc -g -Wall
 CC_PROD = gcc -Wall -O3
 INCLUDES = -Isrc/core/*.h -Isrc/action/*.h
 SRC = src/core/*.c src/action/*.c
-SRC_EXT = src/ext/kvs/*.c src/ext/rdb/*.c
+#SRC_EXT = src/ext/kvs/*.c src/ext/rdb/*.c
+SRC_EXT = 
+
+#WALL = -Wextra -Wformat=2 -Wstrict-aliasing=2 -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wfloat-equal -Wpointer-arith -Wswitch-enum -Winline
+WALL = 
+
+LIBS = -lpthread
 
 #========================================
 #
@@ -25,16 +31,16 @@ default:	build
 build:	compile
 
 compile:
-	$(CC_DEV) -o timaios $(SRC) $(SRC_EXT) $(INCLUDES)
+	$(CC_DEV) $(WALL) -o timaios $(SRC) $(SRC_EXT) $(INCLUDES) $(LIBS)
 
 product:
-	$(CC_PROD) -o timaios -DTM_PRODUCTION $(SRC) $(SRC_EXT) $(INCLUDES)
+	$(CC_PROD) -o timaios -DTM_PRODUCTION $(SRC) $(SRC_EXT) $(INCLUDES) $(LIBS)
 
 prod:	product
 
 
 clean:
-	rm -f ./timaios ./timaios.pid ./timaios.log
+	rm -f ./timaios ./timaios.pid ./timaios.log ./core.*
 
 start:
 	./timaios

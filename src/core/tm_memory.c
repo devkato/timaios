@@ -19,7 +19,17 @@ void tm_memory_reset(void *_pointer, size_t _size)
  */
 void *tm_memory_allocate(size_t _size)
 {
+  // if (_connection)
+  //   pthread_mutex_lock(&_connection->mutex);
+  
   void *p = malloc(_size);
+  if (p == NULL) {
+    tm_debug("can't allocate memory for size : %d", (int)_size);
+  }
+  
+  // if (_connection)
+  //   pthread_mutex_unlock(&_connection->mutex);
+
   return p;
 }
 

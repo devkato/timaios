@@ -16,3 +16,4 @@ Keywords:
  - Non-Blocking
  - epoll
  - readv/writev
+ - socket pair
