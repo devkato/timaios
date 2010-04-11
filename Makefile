@@ -73,7 +73,8 @@ push:
 #
 #========================================
 curl:
-	curl -v "http://localhost:12345/abc/defg/h?hello=world&heal=theworld"
+	curl -v "http://localhost:12345/"
+  # curl -v "http://localhost:12345/abc/defg/h?hello=world&heal=theworld"
 
 hello:
 	./test/run_and_request_and_kill.sh

@@ -21,7 +21,7 @@ TM_SERVER_SOCKET tm_initialize_socket()
   setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&yes, sizeof(int));
   setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (const void *)&send_buffer_size, sizeof(int));
   setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (const void *)&send_buffer_size, sizeof(int));
-  // setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const void*)&yes, (socklen_t)sizeof(int));
+  setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const void*)&yes, (socklen_t)sizeof(int));
   setsockopt(sock, IPPROTO_TCP, TCP_CORK, (const void*)&yes, (socklen_t)sizeof(int));
   // setsockopt(sock, IPPROTO_TCP, TCP_DEFER_ACCEPT, (const void*)&timeout, sizeof(int));
   // setsockopt(sock, IPPROTO_TCP, TCP_QUICKACK, (const void*)&yes, (socklen_t)sizeof(int));
@@ -71,9 +71,6 @@ int tm_writev(int _fd, struct iovec _iovec[], int buffernum)
  */
 int tm_readv(int _fd, char *_data)
 {
-  // int n = read(_fd, _data, TM_REQUEST_MAX_READ_SIZE);
-  // return n;
-
   struct iovec _iovec[1];
   
   _iovec[0].iov_base = _data;
@@ -81,7 +78,7 @@ int tm_readv(int _fd, char *_data)
   int n = readv(_fd, _iovec, 1);
   
   // tm_debug("[tm_readv] n : %d\n", n);
-  // tm_debug("[tm_readv] data : %s\n", data);
+  // tm_debug("[tm_readv] data : %s\n", _data);
   
   return n;
 }

@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
   
   tm_memory_reset(&ev, sizeof(ev));
   
-  ev.events = EPOLLIN;
+  ev.events = EPOLLIN | EPOLLHUP;
   ev.data.ptr = tm_create_connection(server_socket);
   if (ev.data.ptr == NULL) {
     tm_debug("failed to create connection");
@@ -95,8 +95,8 @@ int main(int argc, char *argv[])
     return 1;
   }
   
-  pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-  pthread_mutex_init(&mutex, NULL);
+  // pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+  // pthread_mutex_init(&mutex, NULL);
   
   for (;;) {
     // nfds = epoll_wait(epfd, ev_ret, configuration.nevents, -1);
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
     
     for (i = 0; i < nfds; i++) {
       tm_connection_t *tm_connection = ev_ret[i].data.ptr;
-      tm_connection->mutex = mutex;
+      // tm_connection->mutex = mutex;
       
       if (tm_connection->fd == server_socket) {
         tm_handle_accept(server_socket, epfd, ev_ret[i]);
