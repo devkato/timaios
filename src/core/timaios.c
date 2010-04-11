@@ -95,9 +95,6 @@ int main(int argc, char *argv[])
     return 1;
   }
   
-  // pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-  // pthread_mutex_init(&mutex, NULL);
-  
   for (;;) {
     // nfds = epoll_wait(epfd, ev_ret, configuration.nevents, -1);
     nfds = epoll_wait(epfd, ev_ret, configuration.nevents, 10 * 1000);
@@ -110,12 +107,8 @@ int main(int argc, char *argv[])
     //   tm_debug("after epoll_wait : nfds=%d\n", nfds);
     // }
     
-    // @TODO needed?
-    // pthread_mutex_lock(&mutex);
-    
     for (i = 0; i < nfds; i++) {
       tm_connection_t *tm_connection = ev_ret[i].data.ptr;
-      // tm_connection->mutex = mutex;
       
       if (tm_connection->fd == server_socket) {
         tm_handle_accept(server_socket, epfd, ev_ret[i]);
@@ -127,8 +120,6 @@ int main(int argc, char *argv[])
         tm_handle_close(epfd, tm_connection);
       }
     }
-    
-    // pthread_mutex_unlock(&mutex);
   }
   
   close(server_socket);

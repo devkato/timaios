@@ -88,3 +88,8 @@ req_heavy:
 	./test/run_and_request_and_kill.sh heavy
 
 rh:	req_heavy
+
+req_deadly:
+	./test/run_and_request_and_kill.sh deadly
+
+rd:	req_deadly
