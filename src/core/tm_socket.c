@@ -23,6 +23,7 @@ TM_SERVER_SOCKET tm_initialize_socket()
   setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (const void *)&send_buffer_size, sizeof(int));
   setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const void*)&yes, (socklen_t)sizeof(int));
   setsockopt(sock, IPPROTO_TCP, TCP_CORK, (const void*)&yes, (socklen_t)sizeof(int));
+  
   // setsockopt(sock, IPPROTO_TCP, TCP_DEFER_ACCEPT, (const void*)&timeout, sizeof(int));
   // setsockopt(sock, IPPROTO_TCP, TCP_QUICKACK, (const void*)&yes, (socklen_t)sizeof(int));
   
@@ -43,6 +44,11 @@ void tm_setnonblocking(int _fd)
 {
   int val = 1;
   ioctl(_fd, FIONBIO, &val);
+}
+
+void tm_create_child_process()
+{
+  // if (socketpair(AF_UNIX, SOCK_STREAM, 0, ngx_processes[s].channel) == -1)
 }
 
 

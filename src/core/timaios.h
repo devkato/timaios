@@ -117,6 +117,25 @@ enum tm_connection_status {
 # endif
 
 
+typedef struct tm_worker_process {
+  int sock_read;    /* socket to read data that is sent from parent process */
+  int sock_write;   /* socket to write data to parent process(a.k.a client socket) */
+} tm_worker_process_t;
+
+struct tm_socket_message {
+  struct cmsghdr hdr;
+  int fd;
+};
+
+void initialize_msg(struct msghdr *mh, struct tm_socket_message *msg);
+
+int send_data_to_worker(int _server_socket, int _socket_pair_with_child);
+
+int receive_data_from_parent(int _socket_pair_with_parent);
+
+void create_worker_process(int pair_socket);
+
+
 /**
  *
  *
