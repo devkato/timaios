@@ -1,5 +1,71 @@
 #include "timaios.h"
 
+
+int tm_http_callback_for_header_filed(http_parser *p, const char *buf, size_t len)
+{
+  char *dest = malloc((size_t)256);
+  
+  strncpy(dest, (char *)buf, len);
+  tm_debug("[Header Name] %s\n", dest);
+  
+  free(dest);
+  
+  return 0;
+}
+
+
+int tm_http_callback_for_header_value(http_parser *p, const char *buf, size_t len)
+{
+  char *dest = malloc((size_t)256);
+  
+  strncpy(dest, (char *)buf, len);
+  tm_debug("[Header Value] %s\n", dest);
+  
+  free(dest);
+  
+  return 0;
+}
+
+
+int tm_http_callback_for_path(http_parser *p, const char *buf, size_t len)
+{
+  char *dest = malloc((size_t)256);
+  
+  strncpy(dest, (char *)buf, len);
+  tm_debug("[Path] %s\n", dest);
+  
+  free(dest);
+  
+  return 0;
+}
+
+
+int tm_http_callback_for_url(http_parser *p, const char *buf, size_t len)
+{
+  char *dest = malloc((size_t)256);
+  
+  strncpy(dest, (char *)buf, len);
+  tm_debug("[URL] %s\n", dest);
+  
+  free(dest);
+  
+  return 0;
+}
+
+
+int tm_http_callback_for_query_string(http_parser *p, const char *buf, size_t len)
+{
+  char *dest = malloc((size_t)256);
+  
+  strncpy(dest, (char *)buf, len);
+  tm_debug("[Query] %s\n", dest);
+  
+  free(dest);
+  
+  return 0;
+}
+
+
 /**
  * set HTTP Header data.
  *

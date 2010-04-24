@@ -1,3 +1,11 @@
+/**
+ * @TODO comment
+ *
+ *
+ */
+
+#ifndef _TIMAIOS_HEADER_SOCKET_
+#define _TIMAIOS_HEADER_SOCKET_
 
 /**
  *
@@ -14,3 +22,5 @@ int tm_writev(int _fd, struct iovec _iovec[], int buffernum);
 
 int tm_write_response_data(tm_connection_t *_connection);
 
+
+#endif

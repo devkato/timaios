@@ -1,4 +1,20 @@
 /**
+ * @TODO comment
+ *
+ *
+ */
+
+#ifndef _TIMAIOS_HEADER_HTTP_
+#define _TIMAIOS_HEADER_HTTP_
+
+int tm_http_callback_for_header_filed(http_parser *p, const char *buf, size_t len);
+int tm_http_callback_for_header_value(http_parser *p, const char *buf, size_t len);
+int tm_http_callback_for_path(http_parser *p, const char *buf, size_t len);
+int tm_http_callback_for_url(http_parser *p, const char *buf, size_t len);
+int tm_http_callback_for_query_string(http_parser *p, const char *buf, size_t len);
+
+
+/**
  * HTTP Header
  * @TODO
  *
@@ -54,3 +70,5 @@ typedef struct tm_http_response {
 
 const char *tm_http_from_status_code_to_string(int _status_code);
 
+
+#endif

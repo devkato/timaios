@@ -1,3 +1,11 @@
+/**
+ * @TODO comment
+ *
+ *
+ */
+
+#ifndef _TIMAIOS_HEADER_CONNECTION_
+#define _TIMAIOS_HEADER_CONNECTION_
 
 /**
  *
@@ -27,3 +35,5 @@ void tm_create_response_data(tm_connection_t *_connection);
 void tm_parse_request(tm_connection_t *_connection);
 
 void tm_set_path(tm_connection_t *_connection);
+
+#endif

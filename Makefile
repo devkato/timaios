@@ -8,12 +8,13 @@ CC_PROD = gcc -Wall -O3
 INCLUDES = -Isrc/core/*.h -Isrc/action/*.h
 SRC = src/core/*.c src/action/*.c
 #SRC_EXT = src/ext/kvs/*.c src/ext/rdb/*.c
-SRC_EXT = 
+SRC_EXT = src/ext/3rd/http_parser.o
 
 #WALL = -Wextra -Wformat=2 -Wstrict-aliasing=2 -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wfloat-equal -Wpointer-arith -Wswitch-enum -Winline
 WALL = 
 
-LIBS = -lpthread
+# LIBS = -lpthread
+LIBS =
 
 #========================================
 #
@@ -42,6 +43,8 @@ prod:	product
 clean:
 	rm -f ./timaios ./timaios.pid ./timaios.log ./core.*
 
+c:	clean
+
 start:
 	./timaios
 
@@ -53,6 +56,11 @@ restart:	stop	start
 top:
 	top -p `cat timaios.pid`
 
+kill:
+	pkill timaios
+
+k:	kill
+
 #========================================
 #
 # - tasks with git repository
@@ -63,9 +71,11 @@ package:	clean
 
 commit:
 	git commit -a
+
 push:
 	git push
 
+p:	push
 
 #========================================
 #
@@ -73,8 +83,8 @@ push:
 #
 #========================================
 curl:
-	curl -v "http://localhost:12345/"
-  # curl -v "http://localhost:12345/abc/defg/h?hello=world&heal=theworld"
+#	curl -v "http://localhost:12345/"
+	curl -v "http://localhost:12345/abc/defg/h?hello=world&heal=theworld"
 
 hello:
 	./test/run_and_request_and_kill.sh

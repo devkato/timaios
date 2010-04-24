@@ -26,10 +26,11 @@ TM_SERVER_SOCKET tm_initialize_socket()
   
   // setsockopt(sock, IPPROTO_TCP, TCP_DEFER_ACCEPT, (const void*)&timeout, sizeof(int));
   // setsockopt(sock, IPPROTO_TCP, TCP_QUICKACK, (const void*)&yes, (socklen_t)sizeof(int));
+  tm_setnonblocking(sock);
   
   bind(sock, (struct sockaddr *)&addr, sizeof(addr));
   
-  listen(sock, 5);
+  listen(sock, 64);
   
   return sock;
 }
