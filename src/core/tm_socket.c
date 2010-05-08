@@ -78,15 +78,16 @@ int tm_writev(int _fd, struct iovec _iovec[], int buffernum)
  */
 int tm_readv(int _fd, char *_data)
 {
-  // struct iovec _iovec[1];
-  // 
-  // _iovec[0].iov_base = _data;
-  // _iovec[0].iov_len = TM_REQUEST_MAX_READ_SIZE;
-  // int n = readv(_fd, _iovec, 1);
+  struct iovec _iovec[1];
+  
+  _iovec[0].iov_base = _data;
+  _iovec[0].iov_len = TM_REQUEST_MAX_READ_SIZE;
+  int n = readv(_fd, _iovec, 1);
   
   // tm_debug("[tm_readv] n : %d\n", n);
   // tm_debug("[tm_readv] data : %s\n", _data);
-  int n = read(_fd, _data, TM_REQUEST_MAX_READ_SIZE);
+  
+  // int n = read(_fd, _data, TM_REQUEST_MAX_READ_SIZE);
   
   if (n < 0) {
     tm_perror("read");

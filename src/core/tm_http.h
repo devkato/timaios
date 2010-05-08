@@ -45,7 +45,6 @@ typedef struct tm_http_cookie {
  *
  */
 typedef struct tm_http_request {
-  char *raw_data;
   char *request_uri;
   char *path;
   char *http_method;

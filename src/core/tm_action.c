@@ -69,6 +69,6 @@ void tm_action_not_found(tm_connection_t *_connection)
     " action associated with \"%s\" is not found.\n"
     " </body>\n"
     "</html>\n",
-    _connection->request->request_uri
+    _connection->request->path
   );
 }

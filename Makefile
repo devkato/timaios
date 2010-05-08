@@ -85,7 +85,8 @@ p:	push
 #
 #========================================
 curl:
-#	curl -v "http://localhost:12345/"
+	curl -v "http://localhost:12345/"
+	curl -v "http://localhost:12345/echo"
 	curl -v "http://localhost:12345/abc/defg/h?hello=world&heal=theworld"
 
 hello:

@@ -23,13 +23,9 @@ tm_connection_t *tm_create_connection(int _fd)
   connection->raw_data = tm_memory_allocate((size_t)TM_REQUEST_MAX_READ_SIZE);
   connection->request = tm_memory_allocate(sizeof(tm_http_request_t));
   
-  // ????
+  // reset memory
   tm_memory_reset(connection->raw_data, TM_REQUEST_MAX_READ_SIZE);
   tm_memory_reset(connection->request, sizeof(tm_http_request_t));
-  
-  
-  // @test
-  connection->request->raw_data = tm_memory_allocate((size_t)TM_REQUEST_MAX_READ_SIZE);
   
   connection->request->request_uri = tm_memory_allocate((size_t)TM_REQUEST_URL_MAX_LENGTH);
   connection->request->http_method = tm_memory_allocate((size_t)TM_HTTP_METHOD_MAX_LENGTH);
@@ -52,9 +48,6 @@ tm_connection_t *tm_create_connection(int _fd)
 void tm_destroy_connection(tm_connection_t *_connection)
 {
   tm_memory_free(_connection->raw_data);
-  
-  // @test
-  tm_memory_free(_connection->request->raw_data);
   
   tm_memory_free(_connection->request->request_uri);
   tm_memory_free(_connection->request->http_method);
@@ -125,7 +118,7 @@ TM_RETURN_STATUS tm_handle_read(int epfd, tm_connection_t *_connection, struct e
   _connection->n = tm_readv(_connection->fd, _connection->raw_data);
   
   tm_debug("_connection->n : %d", _connection->n);
-  tm_debug("strlen(_connection->raw_data) : %d", strlen(_connection->raw_data));
+  tm_debug("strlen(_connection->raw_data) : %d", (int)strlen(_connection->raw_data));
   tm_debug("_connection->raw_data after tm_readv");
   tm_debug("\n%s", _connection->raw_data);
   
@@ -158,9 +151,8 @@ TM_RETURN_STATUS tm_handle_read(int epfd, tm_connection_t *_connection, struct e
 TM_RETURN_STATUS tm_handle_write(int epfd, tm_connection_t *tm_connection, struct epoll_event ev)
 {
   int n;
+  // tm_debug("tm_connection->request->path : %s", tm_connection->request->path);
   
-  /* @TODO pluggable response data */
-  // tm_action_t *action = tm_action_find(tm_connection->request->path);
   tm_action_t *action = tm_action_find(tm_connection->request->path);
   if (action) {
     action->func(tm_connection);
@@ -169,12 +161,12 @@ TM_RETURN_STATUS tm_handle_write(int epfd, tm_connection_t *tm_connection, struc
   }
   
   /* write header data */
-  // tm_http_write_header(tm_connection);
+  tm_http_write_header(tm_connection);
   
   /* write data into socket */
-  // n = tm_write_response_data(tm_connection);
+  n = tm_write_response_data(tm_connection);
   
-  n = tm_write_response_data2(tm_connection);
+  // n = tm_write_response_data2(tm_connection);
   
   if (n < 0) {
     tm_perror("write");
@@ -215,10 +207,6 @@ TM_RETURN_STATUS tm_handle_close(int epfd, tm_connection_t *tm_connection)
  */
 void tm_parse_request(tm_connection_t *_connection)
 {
-  char *raw_data;
-  // char *req_line;
-  // char *val;
-  // char *log_line;
   size_t n;
   int len;
   http_parser *parser;
@@ -228,15 +216,9 @@ void tm_parse_request(tm_connection_t *_connection)
     return;
   }
   
-  // tm_strcpyn(_connection->request->raw_data, _connection->raw_data, TM_REQUEST_MAX_READ_SIZE);
-
   tm_debug("\n%s", _connection->raw_data);
 
-/*
-  raw_data = tm_memory_allocate(TM_REQUEST_MAX_READ_SIZE);
-  tm_strcpyn(raw_data, _connection->raw_data, TM_REQUEST_MAX_READ_SIZE);
-  
-  len = strlen(raw_data);
+  len = strlen(_connection->raw_data);
   
   http_parser_settings settings = { 
     .on_message_begin     = NULL,
@@ -251,71 +233,18 @@ void tm_parse_request(tm_connection_t *_connection)
     .on_message_complete  = NULL
   };
   
-  tm_debug("%s\n", raw_data);
-  
   parser = (http_parser *)tm_memory_allocate(sizeof(http_parser));
+  tm_memory_reset(parser, sizeof(http_parser));
+  
+  parser->data = (tm_http_request_t *)(_connection->request);
+  
   http_parser_init(parser, HTTP_REQUEST);
-  n = http_parser_execute(parser, settings, raw_data, len);
+  n = http_parser_execute(parser, settings, _connection->raw_data, len);
   tm_debug("(len, n) => (%d, %d)\n", len, (int)n);
-
-  tm_memory_free(raw_data);
+  
   tm_memory_free(parser);
-*/
-/*
   
-  // printf("_connection->raw_data : %s\n", _connection->raw_data);
-  
-  // raw_data = tm_memory_allocate(strlen(_connection->raw_data));
-  raw_data = tm_memory_allocate(TM_REQUEST_MAX_READ_SIZE);
-  
-  // tm_debug("_connection->raw_data : %s\n", _connection->raw_data);
-  
-  tm_strcpyn(raw_data, _connection->raw_data, TM_REQUEST_MAX_READ_SIZE);
-  // tm_strcpy(raw_data, _connection->raw_data);
-  // printf("raw_data : %s\n", raw_data);
-  
-  req_line = strtok(raw_data, TM_REQ_LINE_BREAK);
-  if (req_line == NULL) {
-    tm_debug("invalid request\n");
-    return;
-  }
-  
-  val = strtok(req_line, TM_REQ_LINE_BLANK);
-  tm_strcpy(_connection->request->http_method, val);
-  // tm_debug("method : %s\n", _connection->request->http_method);
-  
-  val = strtok(NULL, TM_REQ_LINE_BLANK);  
-  tm_strcpy(_connection->request->request_uri, val);
-  // tm_debug("uri : %s\n", _connection->request->request_uri);
-
-  val = strtok(NULL, TM_REQ_LINE_BLANK);
-  tm_set_path(_connection);
-
-  log_line = tm_memory_allocate(1024);
-  
-  sprintf(log_line, "%d %s %s\n",
-    (int)_connection->request->timestamp,
-    _connection->request->http_method,
-    _connection->request->request_uri
-  );
-  
-  if (strcmp(_connection->request->request_uri, "/") != 0) {
-    tm_debug("invalid request!\n");
-    tm_debug("raw_data : %s\n", raw_data);
-    tm_debug("method : %s\n", _connection->request->http_method);
-    tm_debug("uri : %s\n", _connection->request->request_uri);
-    tm_debug("path : %s\n", _connection->request->path);
-  }
-
-  tm_logger_write(log_line);
-  
-  tm_memory_free(log_line);
-  tm_memory_free(raw_data);
-
-  // @TODO Parse other lines ...
-*/
-  char *request_uri = "/echo";
-  tm_strcpy(_connection->request->path, request_uri);
+  tm_debug("_connection->request->path : %s", _connection->request->path);
 }
 
 

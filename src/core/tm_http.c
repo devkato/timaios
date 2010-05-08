@@ -3,12 +3,13 @@
 
 int tm_http_callback_for_header_filed(http_parser *p, const char *buf, size_t len)
 {
-  char *dest = malloc((size_t)256);
+  char *dest = tm_memory_allocate((size_t)256);
+  tm_memory_reset(dest, (size_t)256);
   
   strncpy(dest, (char *)buf, len);
-  tm_debug("[Header Name] %s\n", dest);
+  tm_debug("[Header Name] %s", dest);
   
-  free(dest);
+  tm_memory_free(dest);
   
   return 0;
 }
@@ -16,12 +17,13 @@ int tm_http_callback_for_header_filed(http_parser *p, const char *buf, size_t le
 
 int tm_http_callback_for_header_value(http_parser *p, const char *buf, size_t len)
 {
-  char *dest = malloc((size_t)256);
+  char *dest = tm_memory_allocate((size_t)256);
+  tm_memory_reset(dest, (size_t)256);
   
   strncpy(dest, (char *)buf, len);
-  tm_debug("[Header Value] %s\n", dest);
+  tm_debug("[Header Value] %s", dest);
   
-  free(dest);
+  tm_memory_free(dest);
   
   return 0;
 }
@@ -29,12 +31,17 @@ int tm_http_callback_for_header_value(http_parser *p, const char *buf, size_t le
 
 int tm_http_callback_for_path(http_parser *p, const char *buf, size_t len)
 {
-  char *dest = malloc((size_t)256);
+  char *dest = tm_memory_allocate((size_t)256);
+  tm_memory_reset(dest, (size_t)256);
   
   strncpy(dest, (char *)buf, len);
-  tm_debug("[Path] %s\n", dest);
+  tm_debug("[Path] %s", dest);
   
-  free(dest);
+  // copy path string into the field of request
+  tm_http_request_t * request = (tm_http_request_t *)(p->data);
+  tm_strcpy(request->path, dest);
+  
+  tm_memory_free(dest);
   
   return 0;
 }
@@ -42,12 +49,13 @@ int tm_http_callback_for_path(http_parser *p, const char *buf, size_t len)
 
 int tm_http_callback_for_url(http_parser *p, const char *buf, size_t len)
 {
-  char *dest = malloc((size_t)256);
+  char *dest = tm_memory_allocate((size_t)256);
+  tm_memory_reset(dest, (size_t)256);
   
   strncpy(dest, (char *)buf, len);
-  tm_debug("[URL] %s\n", dest);
+  tm_debug("[URL] %s", dest);
   
-  free(dest);
+  tm_memory_free(dest);
   
   return 0;
 }
@@ -55,12 +63,13 @@ int tm_http_callback_for_url(http_parser *p, const char *buf, size_t len)
 
 int tm_http_callback_for_query_string(http_parser *p, const char *buf, size_t len)
 {
-  char *dest = malloc((size_t)256);
+  char *dest = tm_memory_allocate((size_t)256);
+  tm_memory_reset(dest, (size_t)256);
   
   strncpy(dest, (char *)buf, len);
-  tm_debug("[Query] %s\n", dest);
+  tm_debug("[Query] %s", dest);
   
-  free(dest);
+  tm_memory_free(dest);
   
   return 0;
 }
