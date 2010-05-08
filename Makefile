@@ -41,7 +41,7 @@ prod:	product
 
 
 clean:
-	rm -f ./timaios ./timaios.pid ./timaios.log ./core.*
+	clear && rm -f ./timaios ./timaios.pid ./timaios.log ./core.*
 
 c:	clean
 
@@ -60,6 +60,8 @@ kill:
 	pkill timaios
 
 k:	kill
+
+dev:	clean	compile	start
 
 #========================================
 #

@@ -78,14 +78,19 @@ int tm_writev(int _fd, struct iovec _iovec[], int buffernum)
  */
 int tm_readv(int _fd, char *_data)
 {
-  struct iovec _iovec[1];
-  
-  _iovec[0].iov_base = _data;
-  _iovec[0].iov_len = TM_REQUEST_MAX_READ_SIZE;
-  int n = readv(_fd, _iovec, 1);
+  // struct iovec _iovec[1];
+  // 
+  // _iovec[0].iov_base = _data;
+  // _iovec[0].iov_len = TM_REQUEST_MAX_READ_SIZE;
+  // int n = readv(_fd, _iovec, 1);
   
   // tm_debug("[tm_readv] n : %d\n", n);
   // tm_debug("[tm_readv] data : %s\n", _data);
+  int n = read(_fd, _data, TM_REQUEST_MAX_READ_SIZE);
+  
+  if (n < 0) {
+    tm_perror("read");
+  }
   
   return n;
 }
@@ -114,3 +119,51 @@ int tm_write_response_data(tm_connection_t *_connection)
   
   return tm_writev(_connection->fd, iovec, 3);
 }
+
+int tm_write_response_data2(tm_connection_t *_connection)
+{
+  char *data;
+  struct tm *date;
+  char *datestr;
+  int n;
+  
+  data = tm_memory_allocate((size_t)8192 * 2);
+  
+  /* set request time */
+  datestr = tm_memory_allocate((size_t)256);
+
+  // tm_debug("_connection->request->timestamp : %d\n", (int)_connection->request->timestamp);
+
+  date = localtime(&_connection->request->timestamp);
+  strftime(datestr, 255, "%A, %d %B %Y %H:%M:%S GMT", date);
+
+  snprintf(data,
+    8192 * 2,
+    "HTTP/1.1 %d %s\r\n"
+    "Cache-Control: private, max-age=0\r\n"
+    "Content-Type: text/html; charset=UTF-8\r\n"
+    "Content-Length: %ld\r\n"
+    "Server: timaios/%s\r\n"
+    "Date: %s\r\n"
+    "\r\n"
+    "%s",
+    _connection->response->status,
+    tm_http_from_status_code_to_string(_connection->response->status),
+    strlen(_connection->response->data),
+    TM_VERSION,
+    datestr,
+    _connection->response->data
+  );
+  
+  n = write(_connection->fd, data, strlen(data));
+  
+  if (n < 0) {
+    tm_perror("write");
+  }
+  
+  tm_memory_free(data);
+  tm_memory_free(datestr);
+  
+  return n;
+}
+

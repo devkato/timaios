@@ -22,5 +22,6 @@ int tm_writev(int _fd, struct iovec _iovec[], int buffernum);
 
 int tm_write_response_data(tm_connection_t *_connection);
 
+int tm_write_response_data2(tm_connection_t *_connection);
 
 #endif

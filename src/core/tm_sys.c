@@ -24,7 +24,7 @@ int tm_sys_getpagesize()
  * Detect maximum number of file descriptors.
  *
  */
-int get_max_fd_num()
+int tm_get_max_fd_num()
 {
   struct rlimit  rl;
   

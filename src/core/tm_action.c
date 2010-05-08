@@ -17,7 +17,7 @@ void tm_action_add(int _index, const char *_path, void* _func)
   action->func = _func;
   action_map[_index] = action;
   
-  tm_debug("add action[%d] for %s\n", _index, _path);
+  tm_debug("add action[%d] for %s", _index, _path);
 }
 
 
@@ -34,17 +34,17 @@ tm_action_t *tm_action_find(char *_path)
   int i;
   for (i = 0; i < 10; i++) {
     if (!action_map[i]) {
-      tm_debug("no action found.\n");
+      tm_debug("no action found.");
       return NULL;
     }
     
     if (strcmp((action_map[i])->url, _path) == 0) {
-      tm_debug("function for %s is selected.\n", _path);
+      tm_debug("function for %s is selected.", _path);
       return action_map[i];
     }
   }
   
-  tm_debug("no action found.\n");
+  tm_debug("no action found.");
   
   return NULL;
 }

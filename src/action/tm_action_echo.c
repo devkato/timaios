@@ -2,8 +2,11 @@
 
 void tm_action_echo(tm_connection_t *_connection)
 {
+  // tm_debug("_connection->request->raw_data : \n%s\n", _connection->request->raw_data);
+  
   /* response body */
-  sprintf(_connection->response->data,
+  snprintf(_connection->response->data,
+    TM_RESPONSE_DATA_MAX_LENGTH,
     "<html>\n"
     " <head>\n"
     "   <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"

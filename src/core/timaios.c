@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
   TM_SERVER_SOCKET server_socket;
   pid_t process_id;
   int num_of_process;
+  int max_fd = tm_get_max_fd_num();
   
   /* get number of logical cpus */
   num_of_process = tm_sys_get_cpu_num() - 1;
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
   tm_create_pid_file(process_id, configuration.pid_file);
   
   server_socket = tm_initialize_socket();
-  tm_debug("server_socket : %d\n", server_socket);
+  tm_debug("server_socket : %d", server_socket);
   
   /* Start-up message */
   printf(
@@ -59,14 +60,20 @@ int main(int argc, char *argv[])
     " Pid           : %d\n"
     " Log File      : %s\n"
     " Child Process : %d\n"
+    " Descriptor Limit : %d\n"
     "========================================\n",
     configuration.pid_file,
     configuration.port,
     configuration.nevents,
     process_id,
     configuration.log_file,
-    num_of_process
+    num_of_process,
+    max_fd
   );
+  
+  // tm_debug("SSIZE_MAX : %ld", SSIZE_MAX);
+  
+  configuration.nevents = max_fd;
   
   /* deamonize process */
   if (configuration.is_daemon) {
@@ -99,7 +106,7 @@ int send_data_to_worker(int _socket_pair_with_child, int _client_socket)
   initialize_msg(&mh, &msg);
   msg.fd = _client_socket;
   
-  tm_debug("send_data_to_worker : to %d\n", _socket_pair_with_child);
+  tm_debug("send_data_to_worker : to %d", _socket_pair_with_child);
   if (sendmsg(_socket_pair_with_child, &mh, 0) < 0) {
     tm_perror("sendmsg");
     return -1;
@@ -116,7 +123,7 @@ int receive_data_from_parent(int _socket_pair_with_parent)
   
   initialize_msg(&mh, &msg);
   
-  tm_debug("receive_data_from_parent : from %d\n", _socket_pair_with_parent);
+  tm_debug("receive_data_from_parent : from %d", _socket_pair_with_parent);
   
   rv = recvmsg(_socket_pair_with_parent, &mh, sizeof(mh));
   
@@ -143,7 +150,7 @@ void create_single_process(TM_SERVER_SOCKET _server_socket)
   /* event structure */
   struct epoll_event ev;
   
-  tm_debug("create_single_process : %d\n", _server_socket);
+  tm_debug("create_single_process : %d", _server_socket);
   
   epfd = tm_epoll_create(configuration.nevents);
 
@@ -166,14 +173,15 @@ void create_single_process(TM_SERVER_SOCKET _server_socket)
     return;
   }
   
-  // tm_debug("create_worker_process : 2\n");
+  // tm_debug("create_worker_process : 2");
   
   while (1) {
     struct epoll_event ev_ret[configuration.nevents];
     
-    nfds = epoll_wait(epfd, ev_ret, configuration.nevents, 3 * 1000);
+    // nfds = epoll_wait(epfd, ev_ret, configuration.nevents, 3 * 1000);
+    nfds = epoll_wait(epfd, ev_ret, configuration.nevents, -1);
     
-    tm_debug("create_worker_process : nfds => %d\n", nfds);
+    tm_debug("create_worker_process : nfds => %d", nfds);
     
     if (nfds < 0) {
       tm_perror("epoll_wait");
@@ -185,29 +193,29 @@ void create_single_process(TM_SERVER_SOCKET _server_socket)
       
       if (tm_connection->fd == _server_socket) {
         
-        tm_debug("accept data\n");
+        tm_debug("accept data");
         tm_handle_accept(tm_connection->fd, epfd, ev_ret[i]);
         
       } else if (ev_ret[i].events & EPOLLIN) {
         
-        tm_debug("read data\n");
+        tm_debug("read data");
         tm_handle_read(epfd, tm_connection, ev_ret[i]);
         
       } else if (ev_ret[i].events & EPOLLOUT) {
         
-        tm_debug("write data\n");
+        tm_debug("write data");
         tm_handle_write(epfd, tm_connection, ev_ret[i]);
         
       } else if (ev_ret[i].events & EPOLLHUP) {
         
-        tm_debug("error occurred on handling event.\n");
+        tm_debug("error occurred on handling event.");
         tm_handle_close(epfd, tm_connection);
         
       }
     }
   }
   
-  tm_debug("end of create_single_process\n");
+  tm_debug("end of create_single_process");
 }
 
 
@@ -220,7 +228,7 @@ void create_worker_process(int pair_socket)
   /* event structure */
   struct epoll_event ev;
   
-  tm_debug("create_worker_process : %d\n", pair_socket);
+  tm_debug("create_worker_process : %d", pair_socket);
   
   epfd = tm_epoll_create(configuration.nevents);
 
@@ -243,7 +251,7 @@ void create_worker_process(int pair_socket)
     return;
   }
   
-  // tm_debug("create_worker_process : 2\n");
+  // tm_debug("create_worker_process : 2");
   
   while (1) {
     struct epoll_event ev_ret[configuration.nevents];
@@ -251,7 +259,7 @@ void create_worker_process(int pair_socket)
     // nfds = epoll_wait(epfd, ev_ret, configuration.nevents, -1);
     nfds = epoll_wait(epfd, ev_ret, configuration.nevents, 3 * 1000);
     
-    tm_debug("create_worker_process : nfds => %d\n", nfds);
+    tm_debug("create_worker_process : nfds => %d", nfds);
     
     if (nfds < 0) {
       tm_perror("epoll_wait");
@@ -263,28 +271,28 @@ void create_worker_process(int pair_socket)
       
       if (tm_connection->fd == pair_socket) {
         
-        tm_debug("accept data through pair-socket\n");
+        tm_debug("accept data through pair-socket");
         tm_handle_accept(tm_connection->fd, epfd, ev_ret[i]);
         
       } else if (ev_ret[i].events & EPOLLIN) {
         
-        tm_debug("read data through pair-socket\n");
+        tm_debug("read data through pair-socket");
         tm_handle_read(epfd, tm_connection, ev_ret[i]);
         
       } else if (ev_ret[i].events & EPOLLOUT) {
         
-        tm_debug("write data to pair-socket\n");
+        tm_debug("write data to pair-socket");
         tm_handle_write(epfd, tm_connection, ev_ret[i]);
         
       } else if (ev_ret[i].events & EPOLLHUP) {
         
-        tm_debug("error occurred on handling event.\n");
+        tm_debug("error occurred on handling event.");
         tm_handle_close(epfd, tm_connection);
         
       }
     }
   }
   
-  tm_debug("end of create_worker_process\n");
+  tm_debug("end of create_worker_process");
   // close(pair_socket);
 }

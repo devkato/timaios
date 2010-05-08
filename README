@@ -17,3 +17,6 @@ Keywords:
  - epoll
  - readv/writev
  - socket pair
+
+Notice
+ you should disable iptables(or remove ip_conntrack module) because of performance.

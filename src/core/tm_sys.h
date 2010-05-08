@@ -12,7 +12,7 @@ int tm_sys_get_cpu_num();
 
 int tm_sys_getpagesize();
 
-int get_max_fd_num();
+int tm_get_max_fd_num();
 
 
 #endif

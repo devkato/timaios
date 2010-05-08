@@ -4,7 +4,7 @@ level=$1
 host="localhost"
 port="12345"
 path="/"
-concurrency=1000
+concurrency=500
 
 case ${level} in
   "normal" ) ab -n10000 -c${concurrency} "http://${host}:${port}${path}" ;;

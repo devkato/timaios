@@ -84,8 +84,9 @@ void tm_http_write_header(tm_connection_t *_connection)
 
   date = localtime(&_connection->request->timestamp);
   strftime(datestr, 255, "%A, %d %B %Y %H:%M:%S GMT", date);
-  
-  sprintf(_connection->response->header,
+
+  snprintf(_connection->response->header,
+    TM_RESPONSE_HEADER_MAX_LENGTH,
     "HTTP/1.1 %d %s\r\n"
     "Cache-Control: private, max-age=0\r\n"
     "Content-Type: text/html; charset=UTF-8\r\n"
