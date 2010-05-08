@@ -10,7 +10,7 @@ This project's idea is
  - Don't have to implement complete HTTP server: Get something and return something.
  - Don't use frondend, use backend only.
 
-Libraries(will removed)
+Libraries(will be removed)
  HTTP Parser : http://github.com/ry/http-parser
 
 Keywords:
